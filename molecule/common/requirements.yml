@@ -1,4 +1,0 @@
-- name: freeipa_server
-  scm: git
-  src: git@github.com:Aleksandr-Fomenko/base_setup.git
-  version: develop

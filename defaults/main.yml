@@ -1,2 +1,9 @@
 ---
-# defaults file for freeipa_server
+packages:
+  CentOS:
+    "8":
+      - freeipa-server
+      - freeipa-server-dns
+    "9":
+      - freeipa-server
+      - freeipa-server-dns
