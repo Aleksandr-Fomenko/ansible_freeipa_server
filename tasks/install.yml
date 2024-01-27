@@ -8,3 +8,10 @@
   package:
     name: "{{ item }}"
   with_items: "{{ packages[ansible_distribution][ansible_distribution_major_version] }}"
+
+- name: Install ipa-server master
+  shell: >
+    ipa-server-install {{ freeipa_server_common_params | trim }} {{ freeipa_server_master_params | trim }}
+  args:
+    creates: "{{ freeipa_server_sysrestore_file }}"
+  notify: restart ipa service  

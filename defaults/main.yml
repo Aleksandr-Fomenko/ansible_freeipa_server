@@ -7,3 +7,58 @@ packages:
     "9":
       - freeipa-server
       - freeipa-server-dns
+
+freeipa_server_sysrestore_file: "/var/lib/ipa/sysrestore/sysrestore.state"
+freeipa_server_setup_debug: true
+freeipa_server_setup_dns: true
+freeipa_server_no_ui_redirect: false
+freeipa_server_dns_no_dnssec_validation: true
+freeipa_server_dns_no_dns_sshfp: false
+freeipa_server_dns_auto_reverse_zone: true
+freeipa_server_dns_no_reverse_zone: false
+freeipa_server_dns_auto_forwarders: true
+freeipa_server_dns_no_forwarders: false
+freeipa_server_dns_allow_zone_overlap: true
+freeipa_server_ssl_use_signed_cert: false
+
+
+freeipa_server_common_params: >
+  --unattended --mkhomedir
+  {% if freeipa_server_setup_debug %} --debug {% endif %}
+  {% if freeipa_server_no_ui_redirect %} --no-ui-redirect {% endif %}
+  --hostname={{ inventory_hostname }}
+  --domain={{ freeipa_server_domain }}
+  --realm={{ freeipa_server_realm }}
+  {% if freeipa_server_ssl_use_signed_cert %}
+  --ca-cert-file={{ freeipa_server_ssl_dest_dir }}/{{ freeipa_server_ssl_ca_cert }}
+  --dirsrv-cert-file={{ freeipa_server_ssl_dest_dir }}/{{ freeipa_server_ssl_dirsrv_cert }}
+  --dirsrv-cert-name={{ freeipa_server_ssl_dirsrv_name }}
+  --dirsrv-pin={{ freeipa_server_ssl_dirsrv_name }}
+  --http-cert-file={{ freeipa_server_ssl_dest_dir }}/{{ freeipa_server_ssl_http_cert }}
+  --http-cert-name={{ freeipa_server_ssl_http_name }}
+  --http-pin={{ freeipa_server_ssl_http_name }}
+  --pkinit-cert-file={{ freeipa_server_ssl_dest_dir }}/{{ freeipa_server_ssl_pkinit_cert }}
+  --pkinit-cert-name={{ freeipa_server_ssl_pkinit_name }}
+  --pkinit-pin={{ freeipa_server_ssl_pkinit_name }}
+  {% endif %}
+  {% if freeipa_server_setup_dns %}--setup-dns
+  {% if freeipa_server_dns_auto_reverse_zone %}--auto-reverse{% endif %}
+  {% if freeipa_server_dns_no_reverse_zone %}--no-reverse{% endif %}
+  {% if freeipa_server_dns_reverse_zone is defined %}--reverse-zone={{ freeipa_server_dns_reverse_zone }}{% endif %}
+  {% if freeipa_server_dns_allow_zone_overlap %}--allow-zone-overlap{% endif %}
+  {% if freeipa_server_dns_auto_forwarders %}--auto-forwarders{% endif %}
+  {% if freeipa_server_dns_no_forwarders %}--no-forwarders{% endif %}
+  {% if freeipa_server_dns_no_dnssec_validation %}--no-dnssec-validation{% endif %}
+  {% if freeipa_server_dns_no_dns_sshfp %}--no-dns-sshfp{% endif %}
+  --forward-policy={{ freeipa_server_dns_forward_policy| default('first') }}
+  {% if freeipa_server_dns_forwarders is defined %}
+  {% for dns_forwarder in freeipa_server_dns_forwarders %}--forwarder={{ dns_forwarder }} {% endfor %}
+  {% endif %}
+  {% endif %}
+
+freeipa_server_master_params: >
+  --no-host-dns
+  --admin-password={{ freeipa_server_admin_password }}
+  --dn-password={{ freeipa_server_admin_password }}
+  --idstart={{ freeipa_server_idstart | default(200000) }}
+  --idmax={{ freeipa_server_idmax | default(250000) }}
