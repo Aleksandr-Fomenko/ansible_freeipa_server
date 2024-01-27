@@ -59,6 +59,6 @@ freeipa_server_common_params: >
 freeipa_server_master_params: >
   --no-host-dns
   --admin-password={{ freeipa_server_admin_password }}
-  --dn-password={{ freeipa_server_admin_password }}
+  --ds-password={{ freeipa_server_admin_password }}
   --idstart={{ freeipa_server_idstart | default(200000) }}
   --idmax={{ freeipa_server_idmax | default(250000) }}
